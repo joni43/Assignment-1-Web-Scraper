@@ -12,14 +12,22 @@ const request = require('request')
 const { JSDOM } = require('jsdom')
 
 const url = ('http://vhost3.lnu.se:20080/weekend')
-
+function WebcrawlUrl (url) {
 request.get(url, function (error, response, html) {
-  if (!error) {
+  if (!error && response.statusCode === 200) {
     const dom = new JSDOM(html)
-    let blaha = Array.from(dom.window.document.querySelectorAll(`a[href^='http://'], a[href^='https://']`)).map(element => element.href)
-    console.log(blaha)
+   Array.from(dom.window.document.querySelectorAll('a')).forEach(element => {
+    console.log(element.href)
+    WebcrawlUrl(element.href)
+
+   })
   }
 })
+}
+WebcrawlUrl(url)
+
+// Call function in a function.Recursion.
+
 //     let json = JSON.parse(body)
 //     console.log('error:', error)
 //     console.log('status')
