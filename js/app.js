@@ -43,9 +43,24 @@ function WebcrawlUrl (callback) {
      // console.log(link) //Ger ett konstigt terminal utskrift
       var AllUrl = $(this).attr('href')
       StartUrl.push(AllUrl)
-      console.log(StartUrl)
+    })
+    var CalendarLink = StartUrl[0]
+    request(CalendarLink, function (error2, response2, body2) {
+    if(error2) throw error2
+
+    var User = []
+    var $$ = cheerio.load(body2)
+    var links2 = $$('a')
+
+    $(links2).each(function (i, link) {
+      var page_link = $$(this).attr('href')
+      User.push(page_link)
+      console.log(User)
     })
 
+  
+
+    })
 
     callback(null, StartUrl)
   })
