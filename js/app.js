@@ -58,7 +58,30 @@ function WebcrawlUrl (callback) {
       console.log(User)
     })
 
-  
+    var similarDates = []
+    User.forEach(function(link){
+      link = "http://vhost3.lnu.se:20080/calendar/" + link
+      request(link, function (error, response, body) {
+        if(error) throw error
+
+        var $ = cheerio.load(body)
+        var tr = $('tr')
+        var user_dates = []
+        tr.each(function(){
+
+          $(this).find('td').each(function(){
+            //get ok message
+            user_dates.push($(this).text())
+          })
+
+        })
+
+        similarDates.push(user_dates)
+
+      })
+
+
+    })
 
     })
 
