@@ -15,18 +15,19 @@ const url = process.argv[2] || ('http://vhost3.lnu.se:20080/weekend')
 
 let homelinks = []
 
-async function hejhopp (url) {
+async function WebCrawl (url) {
   let links = await getLinks.getLinks(url)
   return links
 }
 
-let startlinks = hejhopp(url)
+let startlinks = WebCrawl(url)
 
 startlinks.then(function (StartUrl) {
   homelinks = StartUrl
   let calenderUrl = homelinks[0]
   let usersCal = getLinks.Calendar(calenderUrl)
-  console.log('startlinks ', calenderUrl)
+  // console.log('startlinks ', calenderUrl)
+  // console.log(usersCal)
   return usersCal
 
   // CalendarLink = StartUrl[0]

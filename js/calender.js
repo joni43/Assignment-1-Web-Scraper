@@ -2,6 +2,7 @@
 
 const cheerio = require('cheerio')
 const rp = require('request-promise')
+let availableDays = []
 
 function fetchCheerio (url) {
   const options = {
@@ -13,7 +14,6 @@ function fetchCheerio (url) {
 function getLinks (url) {
   let StartUrl = []
   return fetchCheerio(url).then(function ($) {
-
     $('a').each(function (i, link) {
       let AllUrl = $(link).attr('href')
       StartUrl.push(AllUrl)
@@ -36,38 +36,41 @@ function Calendar (calUrl) {
     let finalData = []
         // do a for loop for usersURL array
     for (let i = 0; i < usersURL.length; i++) {
-            // Number 3
-            var options = {
-                url: calUrl + usersURL[i],
-                transform: function (body) {
-                  return cheerio.load(body)
-                } // Getting cheerio boady for peter paul nad mary.
-              }
-              rp (options).then(function ($) { // number 3
-                var tdData = []
-                $('tbody tr td').each(function (d) {
-                  tdData.push($(this).text().toLowerCase())
-                })
-                finalData.push(tdData)
-                console.log(finalData)
-                if (usersURL.length === finalData.length) {
-            
-                  var days = ['Friday', 'Saturday', 'Sunday']
-            
-                  if (finalData.length > 0) {
-                    for (i = 0; i < finalData.length; i++) {
-                      if (finalData[0][i] && finalData[1][i] && finalData[2][i]) {
-                        console.log(`On ${days[i]}, we found a match for you guys at index: ${i}`)
-                        break
-                      }
-                    }
-                  }
-                }
-              }).catch(function (err) { // 3.  Catchar peter.html,paul och marry err.
-        console.log(err)
-      })
+        // Number 3
+      var options = {
+        url: calUrl + usersURL[i],
+        transform: function (body) {
+          return cheerio.load(body)
+        } // Getting cheerio boady for peter paul nad mary.
+      }
+      rp(options).then(function ($) { // number 3
+        var tdData = []
+        $('tbody tr td').each(function (d) {
+          tdData.push($(this).text().toLowerCase())
+        })
+        finalData.push(tdData)
+        if (usersURL.length === finalData.length) {
+          var days = ['Friday', 'Saturday', 'Sunday']
+
+          if (finalData[0][0] && finalData[1][0] && finalData[2][0] === 'ok') {
+            availableDays.push('05')
+              console.log('its friday')
+            } else if (finalData[0][1] && finalData[1][1] && finalData[2][1] === 'ok') {
+              availableDays.push('06')
+              console.log('its Saturday')
+            } else if (finalData[0][2] && finalData[1][2] && finalData[2][2] === 'ok') {
+              console.log('its Sunday')
+            }
+          return availableDays
+        }
+      }).catch(function (err) { // 3.  Catchar peter.html,paul och marry err.
+          console.log(err)
+        })
     }
   })
+}
+function Cinema () {
+
 }
 
 module.exports.getLinks = getLinks
