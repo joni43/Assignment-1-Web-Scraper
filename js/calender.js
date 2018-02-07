@@ -26,6 +26,7 @@ function getLinks (url) {
 // Number 2
 
 function Calendar (calUrl) {
+  return new Promise(function(resolve, reject) {
   fetchCheerio(calUrl).then(function ($) {
     let usersURL = []
     $('a').each(function (i, link) {
@@ -61,16 +62,14 @@ function Calendar (calUrl) {
             } else if (finalData[0][2] && finalData[1][2] && finalData[2][2] === 'ok') {
               console.log('its Sunday')
             }
-          return availableDays
+          resolve(availableDays)
         }
       }).catch(function (err) { // 3.  Catchar peter.html,paul och marry err.
           console.log(err)
         })
     }
   })
-}
-function Cinema () {
-
+})
 }
 
 module.exports.getLinks = getLinks

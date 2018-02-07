@@ -26,10 +26,11 @@ startlinks.then(function (StartUrl) {
   homelinks = StartUrl
   let calenderUrl = homelinks[0]
   let usersCal = getLinks.Calendar(calenderUrl)
-  // console.log('startlinks ', calenderUrl)
   // console.log(usersCal)
   return usersCal
 
   // CalendarLink = StartUrl[0]
+}).then(function (usersCal){
+  console.log(usersCal)
 })
 // .then(function () {
