@@ -34,4 +34,5 @@ startlinks.then(async function (StartUrl) {
   console.log(resturangen)
   let login = await getLinks2.LoginResturant()
   console.log(login)
+
 })

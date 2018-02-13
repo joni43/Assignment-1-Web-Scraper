@@ -2,7 +2,8 @@
 'use strict'
 const cin = require('./calender')
 const cheerio = require('cheerio')
-const rp = require('request-promise')
+var request = require('request')
+const rp = require('request-promise').defaults({ simple: false })
 const fetch = require('node-fetch')
 var availableDays = require('./calender').availableDays
 
@@ -33,8 +34,8 @@ function Cinema (CinUrl) {
     fetchCheerio(CinUrl).then(function ($) {
       $('option').filter(function () {
         let movie = $(this).attr('value')
-          // {let test = ($(this).text())
-         //  console.log(test)} Detta consologar day och movie
+ // {let test = ($(this).text())
+     //  console.log(test)} Detta consologar day och movie
         if (movie === '01' || movie === '02' || movie === '03') {
           moviesList.push($(this).text())
         }
@@ -88,16 +89,26 @@ function Resturant (resURL) {
     })
   })
 }
-let test01 = []
-function LoginResturant () {
-  fetch(loginLink, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json'
-    }.then(res => res.json())
-       .then(body => {
-         test01.push(body)
-       })
+
+function LoginResturant (url, data) {
+  return new Promise(function (resolve, reject) {
+    let options = {
+      method: 'POST',  // post the request
+      url: loginLink,
+      followRedirect: true,
+      jar: true,   // important to remember cookies
+      headers: {
+        authorization: 'Basic emVrZTpjb3lz',
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      form: { username: 'zeke', password: 'coys' },
+      transform: function (body) {
+          console.log(body)
+        return cheerio.load(body)
+      }
+    }
+    rp(options).then(function ($) {
+    })
   }).catch(function (err) {
     console.log(err)
   })
