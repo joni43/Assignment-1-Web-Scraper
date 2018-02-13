@@ -1,11 +1,14 @@
+
 'use strict'
-let request = require('request')
 const cheerio = require('cheerio')
 const rp = require('request-promise')
-var bodyParser = require('body-parser')
-const fetch = require('node-fetch')
-let availableDays = []
+/*
+* Calendar.
+* @author Jonathan Nilsson
+* @version 1.1.0
+*/
 
+let availableDays = []
 function fetchCheerio (url) {
   const options = {
     url: url,
@@ -76,54 +79,7 @@ function Calendar (calUrl) {
     })
   })
 }
-/**
- * Read the cinema page and retrieve the movies
- * @param CinUrl
- */
-function Cinema (CinUrl) {
-  let moviesList = []
-  return new Promise(function (resolve, reject) {
-    fetchCheerio(CinUrl).then(function ($) {
-      $('option').filter(function () {
-        let movie = $(this).attr('value')
-        // {let test = ($(this).text())
-       //  console.log(test)} Detta consologar day och movie
-        if (movie === '01' || movie === '02' || movie === '03') {
-          moviesList.push($(this).text())
-        }
-        // console.log(moviesList)
-      })
-      resolve(moviesList)
-    }).catch(function (err) {
-      console.log(err)
-    })
-  })
-}
-function tryingHard () {
-  return new Promise(function (resolve, reject) {
-    let day = ''
-    let movie = ''
-    let MovieObjects = []
-    for (let j = 5; j <= 7; j += 1) {
-      day = '0' + j
-
-      for (let i = 1; i <= 3; i += 1) {
-        movie = '0' + i
-
-        fetch('http://vhost3.lnu.se:20080/cinema/check?day=' + day + '&movie=' + movie)
-      .then(res => res.text())
-      .then(body => {
-        MovieObjects.push(body)
-        if (MovieObjects.length === 9) {
-          resolve(MovieObjects)
-        }
-      })
-      }
-    }
-  })
-}
 
 module.exports.getLinks = getLinks
 module.exports.Calendar = Calendar
-module.exports.Cinema = Cinema
-module.exports.tryingHard = tryingHard
+exports.availableDays = availableDays
