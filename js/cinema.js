@@ -1,4 +1,3 @@
-
 'use strict'
 const cin = require('./calender')
 const cheerio = require('cheerio')
@@ -14,7 +13,6 @@ var availableDays = require('./calender').availableDays
 
 let moviesList = []
 let AvailableMovies = []
-let loginLink
 
 function fetchCheerio (url) {
   const options = {
@@ -34,8 +32,6 @@ function Cinema (CinUrl) {
     fetchCheerio(CinUrl).then(function ($) {
       $('option').filter(function () {
         let movie = $(this).attr('value')
- // {let test = ($(this).text())
-     //  console.log(test)} Detta consologar day och movie
         if (movie === '01' || movie === '02' || movie === '03') {
           moviesList.push($(this).text())
         }
@@ -46,7 +42,7 @@ function Cinema (CinUrl) {
     })
   })
 }
-function tryingHard () {
+function GetAvaibleMovie () {
   return new Promise(function (resolve, reject) {
     let day = ''
     let movie = ''
@@ -72,48 +68,25 @@ function tryingHard () {
         })
       }
     }
+  }).then(function (AvailableMovies) {
+    AvailableMovies.map(AvailableMovies => {
+      AvailableMovies.day = AvailableMovies.day === '05' ? 'friday' : AvailableMovies.day
+      AvailableMovies.day = AvailableMovies.day === '06' ? 'saturday' : AvailableMovies.day
+      AvailableMovies.day = AvailableMovies.day === '07' ? 'sunday' : AvailableMovies.day
+    })
+    return AvailableMovies
+  }).then(function (AvailableMovies) {
+    AvailableMovies.map(AvailableMovies => {
+      AvailableMovies.movie = AvailableMovies.movie === '01' ? 'The Flying Deuces' : AvailableMovies.movie
+      AvailableMovies.movie = AvailableMovies.movie === '02' ? 'Keep Your Seats, Please' : AvailableMovies.movie
+      AvailableMovies.movie = AvailableMovies.movie === '03' ? 'A Day at the Races' : AvailableMovies.movie
+    })
+    return AvailableMovies
   })
     .catch(function (err) {
       console.log(err)
     })
 }
-function Resturant (resURL) {
-  return new Promise(function (resolve, reject) {
-    fetchCheerio(resURL).then(function ($) {
-      $('form').filter(function () {
-        loginLink = resURL.substring(0, resURL.lastIndexOf('/')) + $(this).attr('action')
-        resolve(loginLink)
-      })
-    }).catch(function (err) {
-      console.log(err)
-    })
-  })
-}
 
-function LoginResturant (url, data) {
-  return new Promise(function (resolve, reject) {
-    let options = {
-      method: 'POST',  // post the request
-      url: loginLink,
-      followRedirect: true,
-      jar: true,   // important to remember cookies
-      headers: {
-        authorization: 'Basic emVrZTpjb3lz',
-        'content-type': 'application/x-www-form-urlencoded'
-      },
-      form: { username: 'zeke', password: 'coys' },
-      transform: function (body) {
-          console.log(body)
-        return cheerio.load(body)
-      }
-    }
-    rp(options).then(function ($) {
-    })
-  }).catch(function (err) {
-    console.log(err)
-  })
-}
 module.exports.Cinema = Cinema
-module.exports.tryingHard = tryingHard
-module.exports.Resturant = Resturant
-module.exports.LoginResturant = LoginResturant
+module.exports.GetAvaibleMovie = GetAvaibleMovie

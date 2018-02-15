@@ -1,4 +1,3 @@
-
 'use strict'
 const cheerio = require('cheerio')
 const rp = require('request-promise')
@@ -12,7 +11,9 @@ let availableDays = []
 function fetchCheerio (url) {
   const options = {
     url: url,
-    transform: (body) => cheerio.load(body)
+    transform: function (body) {
+      return cheerio.load(body)
+    }
   }
   return rp(options)
 }

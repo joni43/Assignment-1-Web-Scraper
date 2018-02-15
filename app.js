@@ -5,14 +5,16 @@
 * @version 1.1.0
 */
 'user strict'
-const getLinks = require('./js/calender')
-const getLinks2 = require('./js/cinema')
+const GetLinks = require('./js/calender')
+const CinemaModule = require('./js/cinema')
+const ResturantModule = require('./js/resturant')
+const LetsTurnThisOn = require('./js/letsgo')
 
 const url = process.argv[2] || ('http://vhost3.lnu.se:20080/weekend')
 let homelinks = []
 
 async function WebCrawl (url) {
-  let links = await getLinks.getLinks(url)
+  let links = await GetLinks.getLinks(url)
   console.log('Fetching links...OK')
   return links
 }
@@ -24,15 +26,14 @@ startlinks.then(async function (StartUrl) {
   let cinemaUrl = homelinks[1]
   let resturantUrl = homelinks[2]
 
-  let usersCal = await getLinks.Calendar(calenderUrl) // Här la jag till await
+  let usersCal = await GetLinks.Calendar(calenderUrl) // Här la jag till await
   console.log('Finding free days..ok', usersCal)
-  let cinemaCal = await getLinks2.Cinema(cinemaUrl)  // Och här
+  let cinemaCal = await CinemaModule.Cinema(cinemaUrl)  // Och här
   console.log('Fetching movie shows...OK', cinemaCal)
-  let test = await getLinks2.tryingHard()
-  console.log(test)
-  let resturangen = await getLinks2.Resturant(resturantUrl)
-  console.log(resturangen)
-  let login = await getLinks2.LoginResturant()
-  console.log(login)
-
+  let movieObject = await CinemaModule.GetAvaibleMovie()
+  console.log('------>', movieObject)
+  await ResturantModule.Resturant(resturantUrl)
+  let rest = await ResturantModule.LoginResturant(resturantUrl)
+  let NowWeGo = await LetsTurnThisOn.letsGo(movieObject, rest)
+  console.log(NowWeGo)
 })

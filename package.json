@@ -27,6 +27,7 @@
     "jsdom": "^11.6.0",
     "node-fetch": "^2.0.0",
     "request": "^2.83.0",
-    "request-promise": "^4.2.2"
+    "request-promise": "^4.2.2",
+    "tough-cookie": "^2.3.3"
   }
 }
