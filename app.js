@@ -1,39 +1,45 @@
+
 /**
 * The starting point of the application.
 *
 * @author Jonathan Nilsson
 * @version 1.1.0
 */
+
 'user strict'
-const GetLinks = require('./js/calender')
+
+const Fetch = require('./js/fetch-helpers')
 const CinemaModule = require('./js/cinema')
 const ResturantModule = require('./js/resturant')
-const LetsTurnThisOn = require('./js/letsgo')
+const TheBigDay = require('./js/return-result')
+const Calendar = require('./js/calender')
 
-const url = process.argv[2] || ('http://vhost3.lnu.se:20080/weekend')
-let homelinks = []
+// 'http://labcloudftk46.lnu.se:8080'
 
-async function WebCrawl (url) {
-  let links = await GetLinks.getLinks(url)
+const url = process.argv[2] || 'http://vhost3.lnu.se:20080/weekend'
+
+async function getThreeUrl (url) {
   console.log('Fetching links...OK')
-  return links
+  let links = await Fetch.links(url)
+  return {
+    calendar: links[0],
+    cinema: links[1],
+    restaurant: links[2]
+  }
 }
-let startlinks = WebCrawl(url)
 
-startlinks.then(async function (StartUrl) {
-  homelinks = StartUrl
-  let calenderUrl = homelinks[0]
-  let cinemaUrl = homelinks[1]
-  let resturantUrl = homelinks[2]
+async function main () {
+  // console.log('Fetching movie shows...OK')
+  const homelinks = await getThreeUrl(url)
 
-  let usersCal = await GetLinks.Calendar(calenderUrl) // Här la jag till await
-  console.log('Finding free days..ok', usersCal)
-  let cinemaCal = await CinemaModule.Cinema(cinemaUrl)  // Och här
-  console.log('Fetching movie shows...OK', cinemaCal)
-  let movieObject = await CinemaModule.GetAvaibleMovie()
-  console.log('------>', movieObject)
-  await ResturantModule.Resturant(resturantUrl)
-  let rest = await ResturantModule.LoginResturant(resturantUrl)
-  let NowWeGo = await LetsTurnThisOn.letsGo(movieObject, rest)
-  console.log(NowWeGo)
-})
+  console.log('Finding free days...OK')
+  const availableDays = await Calendar.fetchAvaibleDays(homelinks.calendar)
+  const daysInCommon = Calendar.daysInCommon(availableDays)
+  console.log('dddddd', daysInCommon)
+  let movieObject = await CinemaModule.getAvailableMovies(homelinks.cinema, daysInCommon)
+  const loginLink = await ResturantModule.Resturant(homelinks.restaurant, daysInCommon)
+  let rest = await ResturantModule.LoginResturant(homelinks.restaurant, loginLink, daysInCommon)
+  let presentation = await TheBigDay.returnResult(movieObject, rest)
+
+}
+main()

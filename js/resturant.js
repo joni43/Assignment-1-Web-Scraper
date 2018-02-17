@@ -68,37 +68,37 @@ async function LoginResturant (resURL) {
     BookTable.push($(this).attr('value'))
   })
   BookTable.pop()
-//   if (parseInt(availableDays) === 5) {
-//     BookTable = BookTable.filter((e) => e.startsWith('fri'))
-//   } else if (parseInt(availableDays) === 6) {
-//     BookTable = BookTable.filter((e) => e.startsWith('sat'))
-//   } else if (parseInt(availableDays) === 7) {
-//     BookTable = BookTable.filter((e) => e.startsWith('sun'))
-//   }
-//   return BookTable
-// }
-
   if (parseInt(availableDays) === 5) {
-    let friday = function (item) {
-      return item.indexOf('fri') === 0
-    }
-    let startsWithFri = BookTable.filter(friday)
-    console.log(startsWithFri)
+    BookTable = BookTable.filter((e) => e.startsWith('fri'))
   } else if (parseInt(availableDays) === 6) {
-    let saturday = function (item) {
-      return item.indexOf('sat') === 0
-    }
-    let startsWithSat = BookTable.filter(saturday)
-    console.log(startsWithSat)
+    BookTable = BookTable.filter((e) => e.startsWith('sat'))
   } else if (parseInt(availableDays) === 7) {
-    let sunday = function (item) {
-      return item.indexOf('sun') === 0
-    }
-    let starsWithSun = BookTable.filter(sunday)
-    console.log(starsWithSun)
+    BookTable = BookTable.filter((e) => e.startsWith('sun'))
   }
   return BookTable
 }
+
+//   if (parseInt(availableDays) === 5) {
+//     let friday = function (item) {
+//       return item.indexOf('fri') === 0
+//     }
+//     let startsWithFri = BookTable.filter(friday)
+//     console.log(startsWithFri)
+//   } else if (parseInt(availableDays) === 6) {
+//     let saturday = function (item) {
+//       return item.indexOf('sat') === 0
+//     }
+//     let startsWithSat = BookTable.filter(saturday)
+//     console.log(startsWithSat)
+//   } else if (parseInt(availableDays) === 7) {
+//     let sunday = function (item) {
+//       return item.indexOf('sun') === 0
+//     }
+//     let starsWithSun = BookTable.filter(sunday)
+//     console.log(starsWithSun)
+//   }
+//   return BookTable
+// }
 
 module.exports.Resturant = Resturant
 module.exports.LoginResturant = LoginResturant

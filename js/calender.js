@@ -1,52 +1,25 @@
 'use strict'
 const cheerio = require('cheerio')
 const rp = require('request-promise')
-/*
-* Calendar.
-* @author Jonathan Nilsson
-* @version 1.1.0
-*/
+const Fetch = require('./fetch-helpers')
 
-let availableDays = []
-function fetchCheerio (url) {
-  const options = {
-    url: url,
-    transform: function (body) {
-      return cheerio.load(body)
-    }
-  }
-  return rp(options)
-}
-function getLinks (url) {
-  let StartUrl = []
-  return fetchCheerio(url).then(function ($) {
-    $('a').each(function (i, link) {
-      let AllUrl = $(link).attr('href')
-      StartUrl.push(AllUrl)
-    })
-
-    return StartUrl
-  })
-}
-
-// Number 2
+// Number 1
+// Calendar.
 /**
  * Read the calendar page html page and retrieve the ok and sync day
  * @param calUrl
  */
 
-function Calendar (calUrl) {
-  return new Promise(function (resolve, reject) {
-    fetchCheerio(calUrl).then(function ($) {
-      let usersURL = []
-      $('a').each(function (i, link) {
-        var pageLink = $(link).attr('href')
-        usersURL.push(pageLink)
-      }) // Get links from paul peter mary. 35-42.Correct
+  async function fetchAvaibleDays (calUrl) {
+   const usersURL = await Fetch.links(calUrl)
+   const availableDays = []
 
       let finalData = []
+
+
         // do a for loop for usersURL array
       for (let i = 0; i < usersURL.length; i++) {
+        console.log(usersURL)
         // Number 3
         var options = {
           url: calUrl + usersURL[i],
@@ -58,11 +31,13 @@ function Calendar (calUrl) {
           var tdData = []
           $('tbody tr td').each(function (d) {
             tdData.push($(this).text().toLowerCase())
+            console.log(tdData)
           })
           finalData.push(tdData)
           if (usersURL.length === finalData.length) {
             if (finalData[0][0] && finalData[1][0] && finalData[2][0] === 'ok') {
               availableDays.push('05')
+
            //   console.log('its friday')
             } else if (finalData[0][1] && finalData[1][1] && finalData[2][1] === 'ok') {
               availableDays.push('06')
@@ -71,16 +46,23 @@ function Calendar (calUrl) {
               availableDays.push('07')
               // console.log('its Sunday')
             }
-            resolve(availableDays)
+            console.log('booo', availableDays)
+            return availableDays
           }
-        }).catch(function (err) { // 3.  Catchar peter.html,paul och marry err.
-          console.log(err)
         })
       }
-    })
-  })
+}
+function daysInCommon (days) {
+  console.log('wanna check', days)
+  return days.reduce(common)
 }
 
-module.exports.getLinks = getLinks
-module.exports.Calendar = Calendar
-exports.availableDays = availableDays
+function common (everyone, person) {
+
+  return everyone.filter((day) => person.includes(day))
+}
+
+module.exports = {
+  fetchAvaibleDays: fetchAvaibleDays
+  , daysInCommon: daysInCommon
+}
