@@ -17,30 +17,42 @@ var availableDays = require('./calender').availableDays
 function fetchCheerio (url) {
   const options = {
     url: url,
-    transform: (body) => cheerio.load(body)
+    transform: function (body) {
+      return cheerio.load(body)
+    }
   }
   return rp(options)
 }
+function fetchLinks (url) {
+  let StartUrl = []
+  return fetchCheerio(url).then(function ($) {
+    $('a').each(function (i, link) {
+      let AllUrl = $(link).attr('href')
+      StartUrl.push(AllUrl)
+    })
 
-let loginLink
+    return StartUrl
+  })
+}
 
-async function Resturant (resURL, availableDays) {
+async function Restaurant (resURL, availableDays) {
   const $ = await fetchCheerio(resURL)
 
   // TODO | - Return login link instead of setting a global variable
-  loginLink = $('form').map(function (item, _) {
+  let loginLink = $('form').map(function (item, _) {
     return resURL.substring(0, resURL.lastIndexOf('/')) + $(item).attr('action')
   }).toArray()[0]
-
   return loginLink
 }
 let BookTable = []
-async function LoginResturant (resURL) {
+async function LoginResturant (bad, loginLink, availableDays) {
+  console.log('DEF', bad)
   let cookie = new tough.Cookie({
     key: 'Zeke',
     value: 'coys',
     Domain: resURL
   })
+
 
   // put cookie in an jar which can be used across multiple requests
   var cookiejar = rp.jar()
@@ -61,44 +73,36 @@ async function LoginResturant (resURL) {
     form: { username: 'zeke', password: 'coys' }
   }
   let result = await rp(options)
+  console.log(result)
   // console.log(result.body)
   let $ = cheerio.load(result.body)
   $('input').map(function (d) {
-    // let fatcock = $(this).attr('value')
     BookTable.push($(this).attr('value'))
   })
   BookTable.pop()
+  console.log('badlover', BookTable)
+
   if (parseInt(availableDays) === 5) {
-    BookTable = BookTable.filter((e) => e.startsWith('fri'))
+    let friday = function (item) {
+      return item.indexOf('fri') === 0
+    }
+    let startsWithFri = BookTable.filter(friday)
+    // console.log(startsWithFri)
   } else if (parseInt(availableDays) === 6) {
-    BookTable = BookTable.filter((e) => e.startsWith('sat'))
+    let saturday = function (item) {
+      return item.indexOf('sat') === 0
+    }
+    let startsWithSat = BookTable.filter(saturday)
+   //  console.log(startsWithSat)
   } else if (parseInt(availableDays) === 7) {
-    BookTable = BookTable.filter((e) => e.startsWith('sun'))
+    let sunday = function (item) {
+      return item.indexOf('sun') === 0
+    }
+    let starsWithSun = BookTable.filter(sunday)
+    // console.log(starsWithSun)
   }
   return BookTable
 }
 
-//   if (parseInt(availableDays) === 5) {
-//     let friday = function (item) {
-//       return item.indexOf('fri') === 0
-//     }
-//     let startsWithFri = BookTable.filter(friday)
-//     console.log(startsWithFri)
-//   } else if (parseInt(availableDays) === 6) {
-//     let saturday = function (item) {
-//       return item.indexOf('sat') === 0
-//     }
-//     let startsWithSat = BookTable.filter(saturday)
-//     console.log(startsWithSat)
-//   } else if (parseInt(availableDays) === 7) {
-//     let sunday = function (item) {
-//       return item.indexOf('sun') === 0
-//     }
-//     let starsWithSun = BookTable.filter(sunday)
-//     console.log(starsWithSun)
-//   }
-//   return BookTable
-// }
-
-module.exports.Resturant = Resturant
+module.exports.Restaurant = Restaurant
 module.exports.LoginResturant = LoginResturant

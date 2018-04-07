@@ -1,68 +1,67 @@
-'use strict'
 const cheerio = require('cheerio')
 const rp = require('request-promise')
-const Fetch = require('./fetch-helpers')
+const Fetch = require('./fetch')
 
-// Number 1
-// Calendar.
 /**
- * Read the calendar page html page and retrieve the ok and sync day
- * @param calUrl
- */
-
-  async function fetchAvaibleDays (calUrl) {
-   const usersURL = await Fetch.links(calUrl)
-   const availableDays = []
-
-      let finalData = []
-
-
-        // do a for loop for usersURL array
-      for (let i = 0; i < usersURL.length; i++) {
-        console.log(usersURL)
-        // Number 3
-        var options = {
-          url: calUrl + usersURL[i],
-          transform: function (body) {
-            return cheerio.load(body)
-          } // Getting cheerio boady for peter paul nad mary.
-        }
-        rp(options).then(function ($) { // number 3
-          var tdData = []
-          $('tbody tr td').each(function (d) {
-            tdData.push($(this).text().toLowerCase())
-            console.log(tdData)
-          })
-          finalData.push(tdData)
-          if (usersURL.length === finalData.length) {
-            if (finalData[0][0] && finalData[1][0] && finalData[2][0] === 'ok') {
-              availableDays.push('05')
-
-           //   console.log('its friday')
-            } else if (finalData[0][1] && finalData[1][1] && finalData[2][1] === 'ok') {
-              availableDays.push('06')
-              // console.log('its Saturday')
-            } else if (finalData[0][2] && finalData[1][2] && finalData[2][2] === 'ok') {
-              availableDays.push('07')
-              // console.log('its Sunday')
-            }
-            console.log('booo', availableDays)
-            return availableDays
-          }
-        })
-      }
+* Calendar
+* @author Jonathan Nilsson
+* @version 1.1.0
+*/
+'use strict'
+//
+/**
+* Read the calendar page html page and retrieve the ok and sync day
+* @param calUrl is the url to users calender. http://vhost3.lnu.se:20080/calendar/
+*/
+function fetchCheerio (url) {
+  console.log('try', url)
+  const options = {
+    url: url,
+    transform: function (body) {
+      return cheerio.load(body)
+    }
+  }
+  return rp(options)
 }
+
+function fetchLinks (url) {
+  let StartUrl = []
+  return fetchCheerio(url).then(function ($) {
+    $('a').each(function (i, link) {
+      let AllUrl = $(link).attr('href')
+      StartUrl.push(AllUrl)
+    })
+    return StartUrl
+  })
+}
+
+async function fetchAvailableDays (calUrl) {
+  const usersURL = await fetchLinks(calUrl)
+
+  const availableDays = []
+
+  for (const userURL of usersURL) {
+    const $ = await fetchCheerio(calUrl + userURL)
+
+    function isAvailableDay (_, d) {
+      return $(this).text().toLowerCase() === 'ok'
+    }
+
+    const tdData = $('tbody tr td').map(isAvailableDay).slice()
+    const dayIDs = ['05', '06', '07']
+
+    availableDays.push(dayIDs.filter((v, i) => tdData[i]))
+  }
+
+  return availableDays
+}
+
 function daysInCommon (days) {
-  console.log('wanna check', days)
   return days.reduce(common)
 }
 
 function common (everyone, person) {
-
   return everyone.filter((day) => person.includes(day))
 }
-
-module.exports = {
-  fetchAvaibleDays: fetchAvaibleDays
-  , daysInCommon: daysInCommon
-}
+module.exports.fetchAvailableDays = fetchAvailableDays
+module.exports.daysInCommon = daysInCommon
