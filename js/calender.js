@@ -1,7 +1,7 @@
 const cheerio = require('cheerio')
 const rp = require('request-promise')
 const Fetch = require('./fetch')
-
+const availableDays = []
 /**
 * Calendar
 * @author Jonathan Nilsson
@@ -38,8 +38,6 @@ function fetchLinks (url) {
 async function fetchAvailableDays (calUrl) {
   const usersURL = await fetchLinks(calUrl)
 
-  const availableDays = []
-
   for (const userURL of usersURL) {
     const $ = await fetchCheerio(calUrl + userURL)
 
@@ -52,16 +50,6 @@ async function fetchAvailableDays (calUrl) {
 
     availableDays.push(dayIDs.filter((v, i) => tdData[i]))
   }
-
   return availableDays
 }
-
-function daysInCommon (days) {
-  return days.reduce(common)
-}
-
-function common (everyone, person) {
-  return everyone.filter((day) => person.includes(day))
-}
 module.exports.fetchAvailableDays = fetchAvailableDays
-module.exports.daysInCommon = daysInCommon

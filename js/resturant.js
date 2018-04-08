@@ -36,6 +36,7 @@ function fetchLinks (url) {
 }
 
 async function Restaurant (resURL, availableDays) {
+
   const $ = await fetchCheerio(resURL)
 
   // TODO | - Return login link instead of setting a global variable
@@ -45,8 +46,7 @@ async function Restaurant (resURL, availableDays) {
   return loginLink
 }
 let BookTable = []
-async function LoginResturant (bad, loginLink, availableDays) {
-  console.log('DEF', bad)
+async function LoginResturant (resURL, loginLink, availableDays) {
   let cookie = new tough.Cookie({
     key: 'Zeke',
     value: 'coys',
@@ -73,33 +73,32 @@ async function LoginResturant (bad, loginLink, availableDays) {
     form: { username: 'zeke', password: 'coys' }
   }
   let result = await rp(options)
-  console.log(result)
+
   // console.log(result.body)
   let $ = cheerio.load(result.body)
   $('input').map(function (d) {
     BookTable.push($(this).attr('value'))
   })
   BookTable.pop()
-  console.log('badlover', BookTable)
-
+console.log('what is this', availableDays)
   if (parseInt(availableDays) === 5) {
     let friday = function (item) {
       return item.indexOf('fri') === 0
     }
     let startsWithFri = BookTable.filter(friday)
-    // console.log(startsWithFri)
+    return startsWithFri
   } else if (parseInt(availableDays) === 6) {
     let saturday = function (item) {
       return item.indexOf('sat') === 0
     }
     let startsWithSat = BookTable.filter(saturday)
-   //  console.log(startsWithSat)
+    return startsWithSat
   } else if (parseInt(availableDays) === 7) {
     let sunday = function (item) {
       return item.indexOf('sun') === 0
     }
     let starsWithSun = BookTable.filter(sunday)
-    // console.log(starsWithSun)
+     return starsWithSun
   }
   return BookTable
 }

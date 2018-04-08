@@ -4,15 +4,15 @@ const cheerio = require('cheerio')
 var request = require('request')
 const rp = require('request-promise').defaults({ simple: false })
 const fetch = require('node-fetch')
-var availableDays = require('./calender').availableDays
+var daysInCommon = require('./calender').daysInCommon
+
 
 /**
 * Cinema.s
 * @version 1.1.0
 */
-
+let ArrayDay = ''
 let moviesList = []
-let AvailableMovies = []
 
 function fetchCheerio (url) {
   const options = {
@@ -27,11 +27,13 @@ function fetchCheerio (url) {
  * @param CinUrl
  */
 
-function Cinema (CinUrl) {
+function Cinema (CinUrl, days) {
   return new Promise(function (resolve, reject) {
+
     fetchCheerio(CinUrl).then(function ($) {
       $('option').filter(function () {
         let movie = $(this).attr('value')
+
         if (movie === '01' || movie === '02' || movie === '03') {
           moviesList.push($(this).text())
         }
@@ -42,8 +44,21 @@ function Cinema (CinUrl) {
     })
   })
 }
-function GetAvaibleMovie () {
-  return new Promise(function (resolve, reject) {
+
+function daysInCommons (days) {
+    ArrayDay = days.reduce(common).toString()
+    console.log('WTF', ArrayDay)
+}
+function common (everyone, person) {
+  return everyone.filter((day) => person.includes(day))
+}
+
+    function GetAvaibleMovie () {
+      console.log('AAAAAAAAACCCß', ArrayDay)
+
+   return new Promise(function (resolve, reject) {
+
+
     let day = ''
     let movie = ''
     let MovieObjects = []
@@ -52,41 +67,42 @@ function GetAvaibleMovie () {
       day = '0' + j
       for (let i = 1; i <= 3; i += 1) {
         movie = '0' + i
+
         fetch('http://vhost3.lnu.se:20080/cinema/check?day=' + day + '&movie=' + movie)
         .then(res => res.json())
         .then(body => {
           MovieObjects.push(body)
+// finn ett eller fler fel. Movies är fel! retunerar bara 3 stycken
+
+const AvailableMovies = []
           if (MovieObjects.length === 9) {
+
             for (let movies of MovieObjects) {
+
               for (let statusofMovie of movies) {
-                if (statusofMovie.status === 1 && statusofMovie.day === availableDays[0]) {
+                console.log('ÄÄÄÄÄÄH', statusofMovie.day === ArrayDay)
+                if (statusofMovie.status === 1 && statusofMovie.day === ArrayDay)
+
                   AvailableMovies.push(statusofMovie)
-                }
+                  console.log( AvailableMovies)
+
+
+
+
               }
+
             }resolve(AvailableMovies)
           }
         })
       }
     }
-  }).then(function (AvailableMovies) {
-    AvailableMovies.map(AvailableMovies => {
-      AvailableMovies.day = AvailableMovies.day === '05' ? 'friday' : AvailableMovies.day
-      AvailableMovies.day = AvailableMovies.day === '06' ? 'saturday' : AvailableMovies.day
-      AvailableMovies.day = AvailableMovies.day === '07' ? 'sunday' : AvailableMovies.day
     })
-    return AvailableMovies
-  }).then(function (AvailableMovies) {
-    AvailableMovies.map(AvailableMovies => {
-      AvailableMovies.movie = AvailableMovies.movie === '01' ? 'The Flying Deuces' : AvailableMovies.movie
-      AvailableMovies.movie = AvailableMovies.movie === '02' ? 'Keep Your Seats, Please' : AvailableMovies.movie
-      AvailableMovies.movie = AvailableMovies.movie === '03' ? 'A Day at the Races' : AvailableMovies.movie
-    })
-    return AvailableMovies
-  })
     .catch(function (err) {
       console.log(err)
     })
 }
 
+
 module.exports.Cinema = Cinema
+module.exports.daysInCommons = daysInCommons
 module.exports.GetAvaibleMovie = GetAvaibleMovie
