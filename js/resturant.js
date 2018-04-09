@@ -8,7 +8,6 @@ var request = require('request')
 const rp = require('request-promise').defaults({ simple: false })
 const fetch = require('node-fetch')
 var tough = require('tough-cookie')
-var availableDays = require('./calender').availableDays
 /**
 * Resturant
 * @version 1.1.0
@@ -34,19 +33,19 @@ function fetchLinks (url) {
     return StartUrl
   })
 }
-
 async function Restaurant (resURL, availableDays) {
-
+  console.log('FUUUUUUUUUUAAAAAAAARRRRRRKKKK', availableDays)
   const $ = await fetchCheerio(resURL)
 
-  // TODO | - Return login link instead of setting a global variable
   let loginLink = $('form').map(function (item, _) {
     return resURL.substring(0, resURL.lastIndexOf('/')) + $(item).attr('action')
   }).toArray()[0]
+
   return loginLink
 }
 let BookTable = []
 async function LoginResturant (resURL, loginLink, availableDays) {
+
   let cookie = new tough.Cookie({
     key: 'Zeke',
     value: 'coys',
@@ -80,7 +79,7 @@ async function LoginResturant (resURL, loginLink, availableDays) {
     BookTable.push($(this).attr('value'))
   })
   BookTable.pop()
-console.log('what is this', availableDays)
+
   if (parseInt(availableDays) === 5) {
     let friday = function (item) {
       return item.indexOf('fri') === 0

@@ -16,10 +16,10 @@ async function returnResult (movie, rest) {
   // console.log('assfuck', movie)
   for (let m = 0; m < movie.length; m++) {
     let movieEndTime = parseInt(movie[m].time.substring(0, 2)) + 2
-    console.log('assfuck', movieEndTime)
+    
     for (let r = 0; r < rest.length; r++) {
       let restTime = parseInt(rest[r].substring(3, 5), 10)
-      console.log('DAJAJABAJA', restTime)
+
        // console.log(movieEndTime, ' ', restTime, ' ', movieEndTime === restTime)
       if (movieEndTime === restTime) {
         movie[m].table = restTime

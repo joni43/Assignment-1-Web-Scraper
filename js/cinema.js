@@ -6,7 +6,6 @@ const rp = require('request-promise').defaults({ simple: false })
 const fetch = require('node-fetch')
 var daysInCommon = require('./calender').daysInCommon
 
-
 /**
 * Cinema.s
 * @version 1.1.0
@@ -46,8 +45,8 @@ function Cinema (CinUrl, days) {
 }
 
 function daysInCommons (days) {
-    ArrayDay = days.reduce(common).toString()
-    console.log('WTF', ArrayDay)
+    ArrayDay = days.reduce(common)
+console.log('will i be there and be gayt', ArrayDay)
 }
 function common (everyone, person) {
   return everyone.filter((day) => person.includes(day))
@@ -72,27 +71,31 @@ function common (everyone, person) {
         .then(res => res.json())
         .then(body => {
           MovieObjects.push(body)
+          console.log('I WILL TRY THIS OBJECT', MovieObjects)
 // finn ett eller fler fel. Movies är fel! retunerar bara 3 stycken
 
 const AvailableMovies = []
+const leka = '06'
+console.log('WTFAFAFAF', ArrayDay)
+
+
           if (MovieObjects.length === 9) {
+            resolve(MovieObjects)
 
+                                }
+            for(let dayID of ArrayDay) {
             for (let movies of MovieObjects) {
-
+              console.log('moaaaaaaaaa', dayID)
               for (let statusofMovie of movies) {
-                console.log('ÄÄÄÄÄÄH', statusofMovie.day === ArrayDay)
-                if (statusofMovie.status === 1 && statusofMovie.day === ArrayDay)
+                if (statusofMovie.status === 1 && statusofMovie['day'] === dayID)
 
                   AvailableMovies.push(statusofMovie)
-                  console.log( AvailableMovies)
-
-
-
-
+                  console.log('mucho el taco', statusofMovie['movie'])
               }
-
+            }
+            console.log('DDDDDDDDDDDDDDDDDDDD', AvailableMovies)
             }resolve(AvailableMovies)
-          }
+
         })
       }
     }

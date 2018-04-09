@@ -25,6 +25,7 @@ function fetchCheerio (url) {
 }
 
 function fetchLinks (url) {
+
   let StartUrl = []
   return fetchCheerio(url).then(function ($) {
     $('a').each(function (i, link) {
@@ -36,6 +37,7 @@ function fetchLinks (url) {
 }
 
 async function fetchAvailableDays (calUrl) {
+
   const usersURL = await fetchLinks(calUrl)
 
   for (const userURL of usersURL) {
@@ -50,6 +52,7 @@ async function fetchAvailableDays (calUrl) {
 
     availableDays.push(dayIDs.filter((v, i) => tdData[i]))
   }
+  console.log('DDDDDDDDD', availableDays)
   return availableDays
 }
 module.exports.fetchAvailableDays = fetchAvailableDays
