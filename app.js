@@ -12,7 +12,7 @@ const RestaurantModule = require('./js/resturant')
 const TheBigDay = require('./js/return-result')
 
 // Option URL http://labcloudftk46.lnu.se:8080
-const url = process.argv[2] || ('http://labcloudftk46.lnu.se:8080')
+const url = process.argv[2] || ('http://vhost3.lnu.se:20080/weekend')
 let homelinks = []
 
 async function getThreeUrl (url) {
@@ -30,18 +30,20 @@ async function main () {
 
   const availableDays = await Calendar.fetchAvailableDays(homelinks.calendar)
   console.log('Finding free days..ok')
+  let cinemaCal = await CinemaModule.Cinema(homelinks.cinema)
 
-  const daysInCommon = CinemaModule.daysInCommons(availableDays)
+  const daysInCommon = CinemaModule.daysInCommons(availableDays, cinemaCal)
   console.log('AA', daysInCommon)
-  const movieObject = await CinemaModule.GetAvaibleMovie(homelinks.cinema, daysInCommon)  // Och här
+  const movieObject = await CinemaModule.GetAvaibleMovie(homelinks.cinema, daysInCommon, cinemaCal)  // Och här
   console.log('Fetching movie shows...OK')
 
 
 
   const loginLink = await RestaurantModule.Restaurant(homelinks.restaurant, daysInCommon, availableDays)
   console.log('Fetching returant bookings...OK')
-
-  let rest = await RestaurantModule.LoginResturant(homelinks.restaurant, loginLink, daysInCommon, availableDays)
+  const getResAndDay = await RestaurantModule.fok(availableDays)
+  console.log('yeeeah buddy', getResAndDay)
+  let rest = await RestaurantModule.LoginResturant(homelinks.restaurant, getResAndDay, loginLink, daysInCommon, availableDays)
   console.log('Putting together recommendations...OK')
 
   let presentation = await TheBigDay.returnResult(movieObject, rest)

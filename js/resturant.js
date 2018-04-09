@@ -34,7 +34,6 @@ function fetchLinks (url) {
   })
 }
 async function Restaurant (resURL, availableDays) {
-  console.log('FUUUUUUUUUUAAAAAAAARRRRRRKKKK', availableDays)
   const $ = await fetchCheerio(resURL)
 
   let loginLink = $('form').map(function (item, _) {
@@ -72,6 +71,9 @@ async function LoginResturant (resURL, loginLink, availableDays) {
     form: { username: 'zeke', password: 'coys' }
   }
   let result = await rp(options)
+}
+async function fok (availableDays)
+ {
 
   // console.log(result.body)
   let $ = cheerio.load(result.body)
@@ -85,6 +87,7 @@ async function LoginResturant (resURL, loginLink, availableDays) {
       return item.indexOf('fri') === 0
     }
     let startsWithFri = BookTable.filter(friday)
+    console.log('WAS US DAS', availableDays)
     return startsWithFri
   } else if (parseInt(availableDays) === 6) {
     let saturday = function (item) {

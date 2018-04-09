@@ -26,7 +26,8 @@ function fetchCheerio (url) {
  * @param CinUrl
  */
 
-function Cinema (CinUrl, days) {
+function Cinema (CinUrl) {
+  console.log('AAAAA', CinUrl)
   return new Promise(function (resolve, reject) {
 
     fetchCheerio(CinUrl).then(function ($) {
@@ -35,8 +36,10 @@ function Cinema (CinUrl, days) {
 
         if (movie === '01' || movie === '02' || movie === '03') {
           moviesList.push($(this).text())
+
         }
       })
+      console.log('Runkaballe', moviesList)
       resolve(moviesList)
     }).catch(function (err) {
       console.log(err)
@@ -46,14 +49,14 @@ function Cinema (CinUrl, days) {
 
 function daysInCommons (days) {
     ArrayDay = days.reduce(common)
-console.log('will i be there and be gayt', ArrayDay)
+// console.log('will i be there and be gayt', ArrayDay)
 }
 function common (everyone, person) {
   return everyone.filter((day) => person.includes(day))
 }
-
+console.log()
     function GetAvaibleMovie () {
-      console.log('AAAAAAAAACCCß', ArrayDay)
+      // console.log('AAAAAAAAACCCß', ArrayDay)
 
    return new Promise(function (resolve, reject) {
 
@@ -71,30 +74,29 @@ function common (everyone, person) {
         .then(res => res.json())
         .then(body => {
           MovieObjects.push(body)
-          console.log('I WILL TRY THIS OBJECT', MovieObjects)
+
 // finn ett eller fler fel. Movies är fel! retunerar bara 3 stycken
 
 const AvailableMovies = []
-const leka = '06'
-console.log('WTFAFAFAF', ArrayDay)
+
 
 
           if (MovieObjects.length === 9) {
             resolve(MovieObjects)
-
-                                }
+          }
             for(let dayID of ArrayDay) {
             for (let movies of MovieObjects) {
-              console.log('moaaaaaaaaa', dayID)
+
               for (let statusofMovie of movies) {
                 if (statusofMovie.status === 1 && statusofMovie['day'] === dayID)
 
                   AvailableMovies.push(statusofMovie)
-                  console.log('mucho el taco', statusofMovie['movie'])
+                  // console.log('mucho el taco', AvailableMovies)
               }
             }
-            console.log('DDDDDDDDDDDDDDDDDDDD', AvailableMovies)
-            }resolve(AvailableMovies)
+             
+            }console.log( AvailableMovies)
+            resolve(AvailableMovies)
 
         })
       }
