@@ -49,16 +49,12 @@ function Cinema (CinUrl) {
 
 function daysInCommons (days) {
     ArrayDay = days.reduce(common)
-// console.log('will i be there and be gayt', ArrayDay)
+ console.log('will i be there and be gayt', ArrayDay)
 }
 function common (everyone, person) {
   return everyone.filter((day) => person.includes(day))
 }
-console.log()
-    function GetAvaibleMovie () {
-      // console.log('AAAAAAAAACCCß', ArrayDay)
-
-   return new Promise(function (resolve, reject) {
+async function GetAvaibleMovie () {
 
 
     let day = ''
@@ -79,11 +75,9 @@ console.log()
 
 const AvailableMovies = []
 
-
-
           if (MovieObjects.length === 9) {
-            resolve(MovieObjects)
-          }
+
+
             for(let dayID of ArrayDay) {
             for (let movies of MovieObjects) {
 
@@ -94,20 +88,15 @@ const AvailableMovies = []
                   // console.log('mucho el taco', AvailableMovies)
               }
             }
-             
-            }console.log( AvailableMovies)
-            resolve(AvailableMovies)
+            console.log(AvailableMovies)
+            } return AvailableMovies
+          }
 
         })
       }
     }
-    })
-    .catch(function (err) {
-      console.log(err)
-    })
+
 }
-
-
 module.exports.Cinema = Cinema
 module.exports.daysInCommons = daysInCommons
 module.exports.GetAvaibleMovie = GetAvaibleMovie

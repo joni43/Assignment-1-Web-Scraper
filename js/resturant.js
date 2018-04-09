@@ -34,6 +34,7 @@ function fetchLinks (url) {
   })
 }
 async function Restaurant (resURL, availableDays) {
+  console.log('FUUUUUUUUUUAAAAAAAARRRRRRKKKK', availableDays)
   const $ = await fetchCheerio(resURL)
 
   let loginLink = $('form').map(function (item, _) {
@@ -43,7 +44,7 @@ async function Restaurant (resURL, availableDays) {
   return loginLink
 }
 let BookTable = []
-async function LoginResturant (resURL, loginLink, availableDays) {
+async function LoginResturant (resURL, loginLink, fetchAvailableDays) {
 
   let cookie = new tough.Cookie({
     key: 'Zeke',
@@ -71,9 +72,6 @@ async function LoginResturant (resURL, loginLink, availableDays) {
     form: { username: 'zeke', password: 'coys' }
   }
   let result = await rp(options)
-}
-async function fok (availableDays)
- {
 
   // console.log(result.body)
   let $ = cheerio.load(result.body)
@@ -82,20 +80,19 @@ async function fok (availableDays)
   })
   BookTable.pop()
 
-  if (parseInt(availableDays) === 5) {
+  if (parseInt(fetchAvailableDays) === 5) {
     let friday = function (item) {
       return item.indexOf('fri') === 0
     }
     let startsWithFri = BookTable.filter(friday)
-    console.log('WAS US DAS', availableDays)
     return startsWithFri
-  } else if (parseInt(availableDays) === 6) {
+  } else if (parseInt(fetchAvailableDays) === 6) {
     let saturday = function (item) {
       return item.indexOf('sat') === 0
     }
     let startsWithSat = BookTable.filter(saturday)
     return startsWithSat
-  } else if (parseInt(availableDays) === 7) {
+  } else if (parseInt(fetchAvailableDays) === 7) {
     let sunday = function (item) {
       return item.indexOf('sun') === 0
     }

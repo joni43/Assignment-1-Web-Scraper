@@ -32,19 +32,18 @@ async function main () {
   console.log('Finding free days..ok')
   let cinemaCal = await CinemaModule.Cinema(homelinks.cinema)
 
-  const daysInCommon = CinemaModule.daysInCommons(availableDays, cinemaCal)
+  const daysInCommon = CinemaModule.daysInCommons(availableDays)
   console.log('AA', daysInCommon)
-  const movieObject = await CinemaModule.GetAvaibleMovie(homelinks.cinema, daysInCommon, cinemaCal)  // Och här
+  const movieObject = await CinemaModule.GetAvaibleMovie(homelinks.cinema, daysInCommon)  // Och här
   console.log('Fetching movie shows...OK')
 
 
 
   const loginLink = await RestaurantModule.Restaurant(homelinks.restaurant, daysInCommon, availableDays)
-  console.log('Fetching returant bookings...OK')
-  const getResAndDay = await RestaurantModule.fok(availableDays)
-  console.log('yeeeah buddy', getResAndDay)
-  let rest = await RestaurantModule.LoginResturant(homelinks.restaurant, getResAndDay, loginLink, daysInCommon, availableDays)
-  console.log('Putting together recommendations...OK')
+  console.log('Fetching returant bookings...OK', daysInCommon)
+
+  let rest = await RestaurantModule.LoginResturant(homelinks.restaurant, loginLink, daysInCommon, availableDays)
+  console.log('Putting together recommendations...OK', rest)
 
   let presentation = await TheBigDay.returnResult(movieObject, rest)
 }

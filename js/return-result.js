@@ -12,11 +12,10 @@ const dayNames = {
 }
 
 async function returnResult (movie, rest) {
-   console.log('AAAAAAAA', rest)
-  // console.log('assfuck', movie)
+  console.log('badboi', movie)
   for (let m = 0; m < movie.length; m++) {
     let movieEndTime = parseInt(movie[m].time.substring(0, 2)) + 2
-
+    console.log('AAAAAAAA', movie[m])
     for (let r = 0; r < rest.length; r++) {
       let restTime = parseInt(rest[r].substring(3, 5), 10)
 
