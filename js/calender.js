@@ -1,6 +1,6 @@
 const cheerio = require('cheerio')
 const rp = require('request-promise')
-const Fetch = require('./fetch')
+
 const availableDays = []
 /**
 * Calendar

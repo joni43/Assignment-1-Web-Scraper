@@ -5,7 +5,6 @@
 * @version 1.1.0
 */
 'user strict'
-const Fetch = require('./js/fetch')
 const Calendar = require('./js/calender')
 const CinemaModule = require('./js/cinema')
 const RestaurantModule = require('./js/resturant')
@@ -37,7 +36,7 @@ async function main () {
 
   const daysInCommon = Calendar.daysInCommons(availableDays)
 
-  console.log('Fetching movie shows...OK', daysInCommon)
+  console.log('Fetching movie shows...OK')
   let movieObject = await CinemaModule.GetAvaibleMovie(homelinks.cinema, daysInCommon)
   const tryme = await CinemaModule.sortMovies(movieObject, daysInCommon)
 
