@@ -1,17 +1,23 @@
 
 'use strict'
-const GetLinks = require('./calender')
-const CinemaModule = require('./cinema')
-const ResturantModule = require('./resturant')
+
 const cheerio = require('cheerio')
 var request = require('request')
 const rp = require('request-promise').defaults({ simple: false })
 const fetch = require('node-fetch')
 var tough = require('tough-cookie')
+
 /**
 * Resturant
 * @version 1.1.0
 */
+let ArrayDay = ''
+function daysInCommons (days) {
+  ArrayDay = days.reduce(common)
+}
+function common (everyone, person) {
+return everyone.filter((day) => person.includes(day))
+}
 
 function fetchCheerio (url) {
   const options = {
@@ -33,8 +39,7 @@ function fetchLinks (url) {
     return StartUrl
   })
 }
-async function Restaurant (resURL, availableDays) {
-  console.log('FUUUUUUUUUUAAAAAAAARRRRRRKKKK', availableDays)
+async function Restaurant (resURL, ArrayDay) {
   const $ = await fetchCheerio(resURL)
 
   let loginLink = $('form').map(function (item, _) {
@@ -44,15 +49,13 @@ async function Restaurant (resURL, availableDays) {
   return loginLink
 }
 let BookTable = []
-async function LoginResturant (resURL, loginLink, fetchAvailableDays) {
+async function LoginResturant (resURL, loginLink, ArrayDay, fetchAvailableDays) {
 
   let cookie = new tough.Cookie({
     key: 'Zeke',
     value: 'coys',
     Domain: resURL
   })
-
-
   // put cookie in an jar which can be used across multiple requests
   var cookiejar = rp.jar()
 
@@ -80,27 +83,21 @@ async function LoginResturant (resURL, loginLink, fetchAvailableDays) {
   })
   BookTable.pop()
 
-  if (parseInt(fetchAvailableDays) === 5) {
-    let friday = function (item) {
-      return item.indexOf('fri') === 0
-    }
-    let startsWithFri = BookTable.filter(friday)
-    return startsWithFri
-  } else if (parseInt(fetchAvailableDays) === 6) {
-    let saturday = function (item) {
-      return item.indexOf('sat') === 0
-    }
-    let startsWithSat = BookTable.filter(saturday)
-    return startsWithSat
-  } else if (parseInt(fetchAvailableDays) === 7) {
-    let sunday = function (item) {
-      return item.indexOf('sun') === 0
-    }
-    let starsWithSun = BookTable.filter(sunday)
-     return starsWithSun
+  const dayPrefixes = {
+    'fri': '05',
+    'say': '06',
+    'sun': '07'
   }
+
+// Only keep the table bookings on the days when everyone is available.
+
+  BookTable = BookTable.filter((e) => {
+    let dayID = dayPrefixes[e.slice(0, 3)]
+    return ArrayDay.includes(dayID)
+  })
   return BookTable
 }
 
 module.exports.Restaurant = Restaurant
 module.exports.LoginResturant = LoginResturant
+module.exports.daysInCommons = daysInCommons

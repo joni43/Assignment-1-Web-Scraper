@@ -14,7 +14,6 @@ const availableDays = []
 * @param calUrl is the url to users calender. http://vhost3.lnu.se:20080/calendar/
 */
 function fetchCheerio (url) {
-  console.log('try', url)
   const options = {
     url: url,
     transform: function (body) {
@@ -25,7 +24,6 @@ function fetchCheerio (url) {
 }
 
 function fetchLinks (url) {
-
   let StartUrl = []
   return fetchCheerio(url).then(function ($) {
     $('a').each(function (i, link) {
@@ -52,7 +50,14 @@ async function fetchAvailableDays (calUrl) {
 
     availableDays.push(dayIDs.filter((v, i) => tdData[i]))
   }
-  console.log('DDDDDDDDD', availableDays)
   return availableDays
 }
+function daysInCommons (days) {
+  return days.reduce(common)
+}
+function common (everyone, person) {
+  return everyone.filter((day) => person.includes(day))
+}
+module.exports.daysInCommons = daysInCommons
 module.exports.fetchAvailableDays = fetchAvailableDays
+module.exports.fetchLinks = fetchLinks

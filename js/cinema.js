@@ -1,5 +1,4 @@
 'use strict'
-const cin = require('./calender')
 const cheerio = require('cheerio')
 var request = require('request')
 const rp = require('request-promise').defaults({ simple: false })
@@ -27,9 +26,7 @@ function fetchCheerio (url) {
  */
 
 function Cinema (CinUrl) {
-  console.log('AAAAA', CinUrl)
   return new Promise(function (resolve, reject) {
-
     fetchCheerio(CinUrl).then(function ($) {
       $('option').filter(function () {
         let movie = $(this).attr('value')
@@ -39,7 +36,6 @@ function Cinema (CinUrl) {
 
         }
       })
-      console.log('Runkaballe', moviesList)
       resolve(moviesList)
     }).catch(function (err) {
       console.log(err)
@@ -47,16 +43,8 @@ function Cinema (CinUrl) {
   })
 }
 
-function daysInCommons (days) {
-    ArrayDay = days.reduce(common)
- console.log('will i be there and be gayt', ArrayDay)
-}
-function common (everyone, person) {
-  return everyone.filter((day) => person.includes(day))
-}
 async function GetAvaibleMovie () {
-
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     let day = ''
     let movie = ''
     let MovieObjects = []
@@ -65,46 +53,31 @@ async function GetAvaibleMovie () {
       day = '0' + j
       for (let i = 1; i <= 3; i += 1) {
         movie = '0' + i
-
-        fetch('http://labcloudftk46.lnu.se:8080/cinema2/check?day=' + day + '&movie=' + movie)
+// change to    'http://labcloudftk46.lnu.se:8080/cinema2/check?day=' IF ALT URL
+        fetch('http://vhost3.lnu.se:20080/cinema/check?day=' + day + '&movie=' + movie)
         .then(res => res.json())
         .then(body => {
           MovieObjects.push(body)
-
-// finn ett eller fler fel. Movies är fel! retunerar bara 3 stycken
-
-
-
           if (MovieObjects.length === 9) {
-resolve(MovieObjects)
+            resolve(MovieObjects)
           }
         })
       }
-  }
-})
+    }
+  })
 }
-async function sortMovies (MovieObjects) {
+async function sortMovies (MovieObjects, ArrayDay) {
   const AvailableMovies = []
-            for(let dayID of ArrayDay) {
-            for (let movies of MovieObjects) {
+  for (let dayID of ArrayDay) {
+    for (let movies of MovieObjects) {
+      for (let statusofMovie of movies) {
+        if (statusofMovie.status === 1 && statusofMovie['day'] === dayID) { AvailableMovies.push(statusofMovie) }
+      }
+    }
+  } return AvailableMovies
+}
 
-              for (let statusofMovie of movies) {
-                if (statusofMovie.status === 1 && statusofMovie['day'] === dayID)
-
-                  AvailableMovies.push(statusofMovie)
-                  // console.log('mucho el taco', AvailableMovies)
-              }
-            }
-            console.log('THERE IS A APL ACE ', AvailableMovies)
-            } return AvailableMovies
-          }
-
-//         })
-//       }
-//     }
-
-// }
 module.exports.Cinema = Cinema
-module.exports.daysInCommons = daysInCommons
+module.exports.daysInCommon = daysInCommon
 module.exports.GetAvaibleMovie = GetAvaibleMovie
 module.exports.sortMovies = sortMovies
