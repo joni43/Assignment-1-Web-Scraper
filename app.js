@@ -37,7 +37,7 @@ async function main () {
   const movieObject = await CinemaModule.GetAvaibleMovie(homelinks.cinema, daysInCommon)  // Och här
   console.log('Fetching movie shows...OK')
 
-
+  const tryme = await CinemaModule.sortMovies(movieObject)
 
   const loginLink = await RestaurantModule.Restaurant(homelinks.restaurant, daysInCommon, availableDays)
   console.log('Fetching returant bookings...OK', daysInCommon)
@@ -45,6 +45,6 @@ async function main () {
   let rest = await RestaurantModule.LoginResturant(homelinks.restaurant, loginLink, daysInCommon, availableDays)
   console.log('Putting together recommendations...OK', rest)
 
-  let presentation = await TheBigDay.returnResult(movieObject, rest)
+  let presentation = await TheBigDay.returnResult(movieObject, rest, tryme)
 }
 main()

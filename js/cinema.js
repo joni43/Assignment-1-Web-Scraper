@@ -56,7 +56,7 @@ function common (everyone, person) {
 }
 async function GetAvaibleMovie () {
 
-
+  return new Promise(function(resolve, reject) {
     let day = ''
     let movie = ''
     let MovieObjects = []
@@ -73,11 +73,18 @@ async function GetAvaibleMovie () {
 
 // finn ett eller fler fel. Movies är fel! retunerar bara 3 stycken
 
-const AvailableMovies = []
+
 
           if (MovieObjects.length === 9) {
-
-
+resolve(MovieObjects)
+          }
+        })
+      }
+  }
+})
+}
+async function sortMovies (MovieObjects) {
+  const AvailableMovies = []
             for(let dayID of ArrayDay) {
             for (let movies of MovieObjects) {
 
@@ -88,15 +95,16 @@ const AvailableMovies = []
                   // console.log('mucho el taco', AvailableMovies)
               }
             }
-            console.log(AvailableMovies)
+            console.log('THERE IS A APL ACE ', AvailableMovies)
             } return AvailableMovies
           }
 
-        })
-      }
-    }
+//         })
+//       }
+//     }
 
-}
+// }
 module.exports.Cinema = Cinema
 module.exports.daysInCommons = daysInCommons
 module.exports.GetAvaibleMovie = GetAvaibleMovie
+module.exports.sortMovies = sortMovies
