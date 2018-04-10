@@ -66,7 +66,7 @@ async function GetAvaibleMovie () {
       for (let i = 1; i <= 3; i += 1) {
         movie = '0' + i
 
-        fetch('http://vhost3.lnu.se:20080/cinema/check?day=' + day + '&movie=' + movie)
+        fetch('http://labcloudftk46.lnu.se:8080/cinema2/check?day=' + day + '&movie=' + movie)
         .then(res => res.json())
         .then(body => {
           MovieObjects.push(body)

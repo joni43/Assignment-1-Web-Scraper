@@ -12,7 +12,7 @@ const RestaurantModule = require('./js/resturant')
 const TheBigDay = require('./js/return-result')
 
 // Option URL http://labcloudftk46.lnu.se:8080
-const url = process.argv[2] || ('http://vhost3.lnu.se:20080/weekend')
+const url = process.argv[2] || ('http://labcloudftk46.lnu.se:8080')
 let homelinks = []
 
 async function getThreeUrl (url) {
@@ -45,6 +45,6 @@ async function main () {
   let rest = await RestaurantModule.LoginResturant(homelinks.restaurant, loginLink, daysInCommon, availableDays)
   console.log('Putting together recommendations...OK', rest)
 
-  let presentation = await TheBigDay.returnResult(movieObject, rest, tryme)
+  let presentation = await TheBigDay.returnResult(tryme, rest)
 }
 main()
