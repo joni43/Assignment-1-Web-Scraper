@@ -20,7 +20,6 @@ let homelinks = []
 async function getThreeUrl (url) {
   let links = await Calendar.fetchLinks(url)
   console.log('Fetching links...OK')
-  console.log(links)
   return {
     calendar: links[0],
     cinema: links[1],
@@ -38,14 +37,14 @@ async function main () {
 
   console.log('Fetching movie shows...OK')
   let movieObject = await CinemaModule.GetAvaibleMovie(homelinks.cinema, daysInCommon)
-  const tryme = await CinemaModule.sortMovies(movieObject, daysInCommon)
-
+  const filterMovieObject = await CinemaModule.sortMovies(movieObject, daysInCommon)
+  
   const loginLink = await RestaurantModule.Restaurant(homelinks.restaurant, daysInCommon)
  // Get link to login to resturant
   console.log('Fetching resturant bookings...OK')
   let rest = await RestaurantModule.LoginResturant(homelinks.restaurant, loginLink, daysInCommon)
 
   console.log('Putting together recommendations...OK')
-  let presentation = await TheBigDay.returnResult(tryme, rest)
+  let presentation = await TheBigDay.returnResult(filterMovieObject, rest)
 }
 main()

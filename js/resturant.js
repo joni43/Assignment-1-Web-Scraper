@@ -11,13 +11,6 @@ var tough = require('tough-cookie')
 * Resturant
 * @version 1.1.0
 */
-let ArrayDay = ''
-function daysInCommons (days) {
-  ArrayDay = days.reduce(common)
-}
-function common (everyone, person) {
-return everyone.filter((day) => person.includes(day))
-}
 
 function fetchCheerio (url) {
   const options = {
@@ -100,4 +93,4 @@ async function LoginResturant (resURL, loginLink, ArrayDay, fetchAvailableDays) 
 
 module.exports.Restaurant = Restaurant
 module.exports.LoginResturant = LoginResturant
-module.exports.daysInCommons = daysInCommons
+
